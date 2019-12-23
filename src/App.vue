@@ -149,6 +149,7 @@ export default {
     },
     close: function () {
       this.modal = !this.modal
+      location.reload()
     },
     reload: function () {
       location.reload()
@@ -175,7 +176,6 @@ export default {
           }
         }
       )
-      location.reload()
     }
   }
 }
