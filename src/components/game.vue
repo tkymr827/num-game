@@ -1,7 +1,7 @@
 <template>
     <div id="app">
     <div class="game">
-        <div class="reload" @click="reload"><img src="./assets/reload.png">やり直す</div>
+        <div class="reload" @click="reload"><i class="fas fa-redo-alt"></i>やり直す</div>
         <div class="timer" :class="clear">{{sec}}.{{timer}}秒</div>
         <div class="content">
             <ul>
@@ -14,7 +14,7 @@
         <div class="overlay" v-if="modal">
             <div class="inner">
                 <h1>記録:<span>{{sec}}.{{timer}}</span>秒</h1>
-                <p>名前を入れてスコア登録</p>
+                <p>名前を入れてランキング登録</p>
                 <input type="text" v-model="name" />
                 <button @click="submit">登録</button>
                 <div class="close" @click="close" v-if="modal">Close</div>
@@ -26,160 +26,22 @@
         <p>数字を順番に押すだけ</p>
     </div>
     <div class="ranking">
-        <h2>Score</h2>
+        <h2>ランキング</h2>
         <table border="1">
             <tr>
-                <!-- <th>Ranking</th> -->
+                <th>Ranking</th>
                 <th>Name</th>
                 <th>Time</th>
             </tr>
-            <!-- <tr v-for="(rankdata,index) in rankdatas" :key="index">
-                <th>{{index+1}}</th>
-                <th>{{rankdata.fields.name.stringValue}}</th>
-                <th>{{rankname[index]}}</th>
-                <th>{{ranksec[index]}}.{{ranktimer[index]}}</th>
+            <!-- <tr>
+                <th>{{rank}}</th>
+                <th>{{name}}</th>
+                <th>{{time}}</th>
             </tr> -->
-            <tr v-for="(sort,index) in sorts" :key=index>
-                <!-- <th>{{index +1}}</th> -->
-                <th>{{sort.name[index]}}</th>
-                <th>{{sort.sec[index]}}.{{sort.timer[index]}}</th>
-            </tr>
         </table>
     </div>
 </div>
 </template>
-
-<script>
-import axios from 'axios'
-export default {
-  data: function () {
-    return {
-      timer: 0,
-      sec: 0,
-      buttons: 0,
-      value: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-      check: 1,
-      clear: '',
-      modal: false,
-      name: '',
-
-      starttimer: '',
-      rankdatas: '',
-      ranksec: [],
-      ranktimer: [],
-      rankname: [],
-      sorts: []
-    }
-  },
-  created () {
-    axios.get('https://firestore.googleapis.com/v1/projects/num-game-ranking/databases/(default)/documents/rank')
-      .then(response => {
-        this.rankdatas = response.data.documents
-
-        for (let cnt = 0; cnt < this.rankdatas.length; cnt++) {
-          this.ranksec.push(parseInt(this.rankdatas[cnt].fields.sec.stringValue))
-          this.ranktimer.push(parseInt(this.rankdatas[cnt].fields.timer.stringValue))
-          this.rankname.push(this.rankdatas[cnt].fields.name.stringValue)
-          //   this.ranksec.sort(function (a, b) {
-          //     return (a < b ? -1 : 1)
-          //   })
-          //   this.ranktimer.sort(function (a, b) {
-          //     return (a < b ? -1 : 1)
-          //   })
-
-          //   this.sort.name = this.rankname
-          //   this.sort.sec = this.ranksec
-          //   this.sort.timer = this.ranktimer
-          this.sorts.push({ name: this.rankname, sec: this.ranksec, timer: this.ranktimer })
-
-          //   var hairetu = this.sort
-          //   console.log(hairetu.name[cnt])
-          //   console.log(hairetu.sec[cnt])
-
-          //   this.sorts.sort(function (x, y) {
-          //     if (x.sec < y.sec) return -1
-          //     if (x.sec > y.sec) return 1
-          //   })
-
-        //   this.sorts.sort(function (a, b) {
-        //     if (a.sec < b.sec) return -1
-        //     if (a.sec > b.sec) return 1
-        //     return 0
-        //   })
-        //   this.sorts.sort(function (a, b) {
-        //     if (a.timer < b.timer) return -1
-        //     if (a.timer > b.timer) return 1
-        //     return 0
-        //   })
-        }
-      })
-  },
-  methods: {
-    start: function () {
-      this.starttimer = setInterval(() => {
-        this.timer++
-        if (this.timer === 10) {
-          this.sec++
-          this.timer = 0
-        }
-      }, 100)
-      console.log(this.sorts)
-      this.buttons = 9
-
-      for (let i = this.value.length - 1; i > 0; i--) {
-        let r = Math.floor(Math.random() * (i + 1))
-        let tmp = this.value[i]
-        this.value[i] = this.value[r]
-        this.value[r] = tmp
-      }
-    },
-    click: function (num) {
-      if (num === this.check) {
-        this.check++
-        console.log(num)
-        if (this.check === this.value.length + 1) {
-          clearInterval(this.starttimer)
-          this.clear = 'clear'
-          this.modal = !this.modal
-
-          this.sec = String(this.sec)
-          this.timer = String(this.timer)
-        }
-      }
-    },
-    close: function () {
-      this.modal = !this.modal
-    },
-    reload: function () {
-      location.reload()
-    },
-    submit: function () {
-      if (this.name === '') {
-        alert('名前を入れてください')
-        return
-      }
-      alert('登録しました!')
-      axios.post('https://firestore.googleapis.com/v1/projects/num-game-ranking/databases/(default)/documents/rank'
-        , {
-          fields: {
-            name: {
-              stringValue: this.name
-            },
-            sec: {
-              stringValue: this.sec
-            },
-            timer: {
-              stringValue: this.timer
-            }
-
-          }
-        }
-      )
-      location.reload()
-    }
-  }
-}
-</script>
 
 <style lang="scss">
 * {
@@ -207,16 +69,12 @@ html {
         background: #fff;
         border-radius: 5rem;
         display: inline-block;
-
         .reload {
             float: left;
             text-align: left;
             margin: 4rem 0 2rem 4rem;
             font-size: 3rem;
             cursor: pointer;
-            img{
-                height:3rem;
-            }
         }
         .timer {
             float: right;
@@ -290,28 +148,12 @@ html {
         left: 20rem;
         top: 20rem;
         font-size: 2rem;
-        @media screen and (max-width:1300px){
-            left:0rem;
-        }
-        @media screen and (max-width:900px){
-            background:blue;
-        }
     }
     .ranking {
         position: absolute;
-        height:50rem;
-        width:20rem;
         right: 20rem;
-        top: 10rem;
+        top: 20rem;
         font-size: 2rem;
-        @media screen and (max-width:1300px){
-            top:10rem;
-            right:0rem;
-        }
-        @media screen and (max-width:900px){
-            float: right;
-            background:red;
-        }
     }
 
     .overlay {
@@ -337,15 +179,6 @@ html {
             align-items: center;
             flex-direction: column;
             font-size: 3rem;
-
-            input,button{
-                font-size:3rem;
-                margin:2rem;
-            }
-            button{
-                padding:1rem 2rem;
-            }
-
             span {
                 font-size: 8rem;
                 font-weight: bold;
@@ -374,3 +207,80 @@ html {
 }
 
 </style>
+
+<script>
+import axios from 'axios'
+export default {
+  data: function () {
+    return {
+      timer: 0,
+      sec: 0,
+      buttons: 0,
+      value: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+      check: 1,
+      clear: '',
+      modal: false,
+      name: '',
+      cleartime: '',
+      starttimer: ''
+    }
+  },
+  methods: {
+    start: function () {
+      this.starttimer = setInterval(() => {
+        this.timer++
+        if (this.timer === 10) {
+          this.sec++
+          this.timer = 0
+        }
+      }, 100)
+
+      this.buttons = 9
+
+      for (let i = this.value.length - 1; i > 0; i--) {
+        let r = Math.floor(Math.random() * (i + 1))
+        let tmp = this.value[i]
+        this.value[i] = this.value[r]
+        this.value[r] = tmp
+      }
+    },
+    click: function (num) {
+      if (num === this.check) {
+        this.check++
+        console.log(num)
+        if (this.check === this.value.length + 1) {
+          clearInterval(this.starttimer)
+          this.clear = 'clear'
+          this.modal = !this.modal
+          let strsec = String(this.sec)
+          let strtimer = String(this.timer)
+          this.cleartime = strsec + '.' + strtimer
+          console.log(this.cleartime)
+        }
+      }
+    },
+    close: function () {
+      this.modal = !this.modal
+    },
+    reload: function () {
+      location.reload()
+    },
+    submit: function () {
+      console.log(this.name)
+      console.log(this.cleartime)
+      axios.post('https://firestore.googleapis.com/v1/projects/num-game-ranking/databases/(default)/documents/rank'
+        , {
+          fields: {
+            name: {
+              stringValue: this.name
+            },
+            cleartime: {
+              stringValue: this.cleartime
+            }
+          }
+        }
+      )
+    }
+  }
+}
+</script>
