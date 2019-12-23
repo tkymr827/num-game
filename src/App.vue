@@ -159,7 +159,6 @@ export default {
         alert('名前を入れてください')
         return
       }
-      alert('登録しました!')
       axios.post('https://firestore.googleapis.com/v1/projects/num-game-ranking/databases/(default)/documents/rank'
         , {
           fields: {
@@ -176,6 +175,7 @@ export default {
           }
         }
       )
+      alert('登録しました!')
     }
   }
 }
