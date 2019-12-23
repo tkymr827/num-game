@@ -294,7 +294,7 @@ html {
             left:0rem;
         }
         @media screen and (max-width:900px){
-            background:blue;
+            top:100vh;
         }
     }
     .ranking {
@@ -309,8 +309,7 @@ html {
             right:0rem;
         }
         @media screen and (max-width:900px){
-            float: right;
-            background:red;
+            top:100vh;
         }
     }
 
