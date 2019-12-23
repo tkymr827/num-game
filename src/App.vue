@@ -340,6 +340,7 @@ html {
             input,button{
                 font-size:3rem;
                 margin:2rem;
+                user-select: auto;
             }
             button{
                 padding:1rem 2rem;
