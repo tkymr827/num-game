@@ -41,8 +41,8 @@
             </tr> -->
             <tr v-for="(sort,index) in sorts" :key=index>
                 <!-- <th>{{index +1}}</th> -->
-                <th>{{sort.name[index]}}</th>
-                <th>{{sort.sec[index]}}.{{sort.timer[index]}}</th>
+                <th>{{sort.name}}</th>
+                <th>{{sort.sec}}.{{sort.timer}}</th>
             </tr>
         </table>
     </div>
@@ -77,9 +77,10 @@ export default {
         this.rankdatas = response.data.documents
 
         for (let cnt = 0; cnt < this.rankdatas.length; cnt++) {
-          this.ranksec.push(parseInt(this.rankdatas[cnt].fields.sec.stringValue))
-          this.ranktimer.push(parseInt(this.rankdatas[cnt].fields.timer.stringValue))
-          this.rankname.push(this.rankdatas[cnt].fields.name.stringValue)
+        //   this.ranksec.push(parseInt(this.rankdatas[cnt].fields.sec.stringValue))
+        //   this.ranktimer.push(parseInt(this.rankdatas[cnt].fields.timer.stringValue))
+        //   this.rankname.push(this.rankdatas[cnt].fields.name.stringValue)
+
           //   this.ranksec.sort(function (a, b) {
           //     return (a < b ? -1 : 1)
           //   })
@@ -87,10 +88,29 @@ export default {
           //     return (a < b ? -1 : 1)
           //   })
 
+          this.sorts.push({ name: this.rankdatas[cnt].fields.name.stringValue, sec: this.rankdatas[cnt].fields.sec.stringValue, timer: this.rankdatas[cnt].fields.timer.stringValue })
+
+          this.sorts.sort(function (a, b) {
+            if (a.sec > b.sec) {
+              return 1
+            } else {
+              return -1
+            }
+          })
+          //   this.sorts.sort(function (a, b) {
+          //     if (a.timer > b.timer) {
+          //       return 1
+          //     } else {
+          //       return -1
+          //     }
+          //   })
+
           //   this.sort.name = this.rankname
           //   this.sort.sec = this.ranksec
           //   this.sort.timer = this.ranktimer
-          this.sorts.push({ name: this.rankname, sec: this.ranksec, timer: this.ranktimer })
+
+          //   this.sorts.push({ name: this.rankname, sec: this.ranksec, timer: this.ranktimer })
+          console.log(this.sorts)
 
           //   var hairetu = this.sort
           //   console.log(hairetu.name[cnt])
